@@ -2,3 +2,4 @@
 *.VC.opendb
 *.VC.db-wal
 *.VC.db
+*.suo
