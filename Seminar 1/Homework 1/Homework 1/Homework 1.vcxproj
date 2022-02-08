@@ -139,8 +139,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ex1.cpp" />
-    <ClCompile Include="ex2.cpp" />
+    <ClCompile Include="ex4.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Конторольные вопросы.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

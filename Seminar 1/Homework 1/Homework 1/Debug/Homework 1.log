@@ -1,5 +1,42 @@
-﻿  ex1.cpp
-  ex2.cpp
-  Создание кода...
-MSVCRTD.lib(exe_main.obj) : error LNK2019: ссылка на неразрешенный внешний символ _main в функции "int __cdecl invoke_main(void)" (?invoke_main@@YAHXZ).
-C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Debug\Homework 1.exe : fatal error LNK1120: неразрешенных внешних элементов: 1
+﻿  ex4.cpp
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(34,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(35,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(45,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(46,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(58,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(59,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(71,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Homework 1\ex4.cpp(72,1): warning C4244: +=: преобразование "_Rep" в "int", возможна потеря данных
+          with
+          [
+              _Rep=__int64
+          ]
+  Homework 1.vcxproj -> C:\Users\Антон\OneDrive\Рабочий стол\Информатика\4-semester\Seminar 1\Homework 1\Debug\Homework 1.exe

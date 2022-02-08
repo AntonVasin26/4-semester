@@ -15,11 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex1.cpp">
+    <ClCompile Include="ex4.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="ex2.cpp">
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Конторольные вопросы.txt">
       <Filter>Исходные файлы</Filter>
-    </ClCompile>
+    </Text>
   </ItemGroup>
 </Project>
