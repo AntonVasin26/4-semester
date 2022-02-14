@@ -7,19 +7,18 @@ class Timer
 public:
 	using clock_t = std::chrono::steady_clock;
 	using time_point_t = clock_t::time_point;
-	using interval = clock_t::duration;
-	Timer() : m_begin(clock_t::now()), time(value(0))
+	explicit Timer(std::string name) : n(name), m_begin(clock_t::now()), time(value(0))
 	{}
 	void start()
 	{
 		m_begin = clock_t::now();
 		flag = false;
-		time = std::chrono::microseconds(0);
+		time = value(0);
 	};
 
 	void play()
 	{
-		if (flag == true)
+		if (flag)
 		{
 			m_begin = clock_t::now();
 			flag = false;
@@ -28,10 +27,9 @@ public:
 
 	void stop()
 	{
-		if (flag == false)
+		if (!flag)
 		{
-			m_end = clock_t::now();
-			time += (m_end - m_begin);
+			time += (clock_t::now() - m_begin);
 			flag = true;
 		}
 	};
@@ -39,33 +37,37 @@ public:
 
 	void print_time()
 	{
-		if (flag == false)
+		if (!flag)
 		{
-			m_end = clock_t::now();
-			std::cout << std::chrono::duration_cast <value> (m_end - m_begin).count() << '\n';
-			m_begin = m_end;
+			std::cout << n << ": " << std::chrono::duration_cast <value> (time + (clock_t::now() - m_begin)).count() << '\n';
 		}
 		else
 		{
-			std::cout << std::chrono::duration_cast <value> (time).count() << '\n';
+			std::cout << n << ": " << std::chrono::duration_cast <value> (time).count() << '\n';
 		}
 	}
 
 	~Timer() noexcept
-	{}
+	{
+		if (!flag)
+		{
+			time += (clock_t::now() - m_begin);
+		}
+		std::cout << n << ": " << std::chrono::duration_cast <value> (time).count() << ";   Timer delete\n";
+	}
 private:
+	std::string n;
 	time_point_t m_begin;
-	time_point_t m_end;
-	interval time;
+	clock_t::duration time;
 	bool flag = false;
 };
 
 int main(int argc, char** argv)
 {
 	{
-		Timer<std::chrono::microseconds> t1;
-		Timer<std::chrono::milliseconds> t2;
-		Timer<std::chrono::seconds> t3;
+		Timer<std::chrono::microseconds> t1("clock1");
+		Timer<std::chrono::milliseconds> t2("clock2");
+		Timer<std::chrono::seconds> t3("clock3");
 		auto c = 1.0;
 		t1.start();
 		for (auto j = 0; j < 3; ++j)
