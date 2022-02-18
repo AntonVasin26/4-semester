@@ -141,6 +141,7 @@
   <ItemGroup>
     <Text Include="comment to ex1.txt" />
     <Text Include="Контрольные вопросы.txt" />
+    <Text Include="comment to ex2.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ex2.cpp" />

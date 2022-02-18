@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <vector>
+#include <forward_list>
+#include <stack>
 
 #include <boost/multi_array.hpp>
 
@@ -56,4 +59,6 @@ int main(int argc, char** argv)
 	system("pause");
 
 	return EXIT_SUCCESS;
-}
+
+	std::forward_list<int> list1;
+	list1.push_front
