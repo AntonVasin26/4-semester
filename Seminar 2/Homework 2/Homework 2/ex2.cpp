@@ -142,3 +142,8 @@ int main()
 	t4.print_mean_time(Number_of_passes);
 	t5.print_mean_time(Number_of_passes);
 }
+//1)vector - 3343 mks
+//2)array - 3461 mks
+//3)deque - 6779 mks
+//4)forward_list - 12779 mks
+//5)list - 14742 mks
