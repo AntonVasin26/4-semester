@@ -44,10 +44,11 @@ int main()
 	}
 
 	std::vector < boost::multi_array < int, 3 >::index > shape(3, boost::multi_array < int, 3 >::index(0));
-	//for (auto element : shape)
-	//{
-	//	std::cout << element << ' ';
-	//}
+	for (auto element : shape)
+	{
+		std::cout << element << ' ';
+	}
+	std::cout << "\n\n";
 	fill_shape < 3 >(v, std::begin(shape));
 	boost::multi_array < int, 3 > multi_array(shape);
 	for (auto element1 : multi_array)
@@ -62,4 +63,9 @@ int main()
 		}
 		std::cout << '\n';
 	}
+
+	std::cout << "-----------------------------------\n\n";
+	int b = 4;
+	std::cout << (b++) * 4;
+	std::cout << b;
 }

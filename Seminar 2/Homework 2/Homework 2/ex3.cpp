@@ -22,24 +22,28 @@ void fill_multi_array(const Container& container, Forward_Iterator multi_array)
 {
 	if constexpr (N > 1)
 	{
-		//for (const auto& element : container)
-		//{
-		//	fill_multi_array <N - 1>(element, (multi_array++)->begin());
-		//}
-		for (auto i = 0; i<std::size(container); ++i)
+		for (const auto& element : container)
 		{
-			fill_multi_array <N - 1>(container[i], (multi_array++)->begin());
+			fill_multi_array <N - 1>(element, (multi_array++)->begin());
+			//the increment is triggered after passing begin() from the iterator
 		}
+		//for (auto i = 0; i<std::size(container); ++i)
+		//{
+		//	fill_multi_array <N - 1>(container[i], (multi_array)->begin());
+		//	multi_array++;
+		//}
 	}
 	else
 	{
-		for (auto i = 0; i<std::size(container); ++i)
+		for (const auto& element : container)
 		{
-			*(multi_array++) = container[i];
+			*(multi_array++) = element;
+			//the increment is triggered after passing begin() from the iterator
 		}
-		//for (const auto& element : container)
+		//for (auto i = 0; i<std::size(container); ++i)
 		//{
-		//	*(multi_array++) = element;
+		//	*(multi_array) = container[i];
+		//	multi_array++;
 		//}
 	}
 }
@@ -49,13 +53,17 @@ auto make_multi_array(const Container& container)
 {
 	using multi_array_t = boost::multi_array < T, N >;
 
-	std::vector < multi_array_t::index > shape(N, multi_array_t::index(0));
+	std::vector < multi_array_t::index > shape(N, multi_array_t::index(0)); 
+	//Creating an array with the dimensions of the "multi_array" container
 
 	fill_shape < N >(container, std::begin(shape));
+	//filling with array sizes
 
 	multi_array_t multi_array(shape);
+	//creating a "multi_array" of size "v"
 
 	fill_multi_array < N >(container, std::begin(multi_array));
+	//Filling in "multi_array"
 
 	return multi_array;
 }
