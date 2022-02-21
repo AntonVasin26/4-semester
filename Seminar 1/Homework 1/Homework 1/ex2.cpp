@@ -1,4 +1,3 @@
 //ex2 create successfully
-//change in branch
-//change in branch
-//change in branch
+//change in master
+//change in master
