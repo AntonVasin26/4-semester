@@ -83,7 +83,8 @@ private:
 
 int main()
 {
-	std::array<int, 100000> init_array;
+	constexpr int size_of_container = 100000;
+	std::array<int, size_of_container> init_array;
 	std::vector<int> v1;
 	v1.reserve(std::size(init_array));
 	std::deque<int> q1;
@@ -97,7 +98,7 @@ int main()
 	int Number_of_passes = 10;
 	for (auto j = 0; j < Number_of_passes; ++j)
 	{
-		for (auto i = 0; i < std::size(init_array); ++i)
+		for (auto i = 0; i < size_of_container; ++i)
 		{
 			init_array[i] = rand() % 1000;
 		}
