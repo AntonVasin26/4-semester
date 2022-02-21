@@ -22,7 +22,7 @@ void fill_multi_array(const Container& container, Forward_Iterator multi_array)
 {
 	if constexpr (N > 1)
 	{
-		for (const auto& element : container)
+		for (const auto& element : container)//the type of variable being iterated over  the variable itself : container
 		{
 			fill_multi_array <N - 1>(element, (multi_array++)->begin());
 			//the increment is triggered after passing begin() from the iterator
