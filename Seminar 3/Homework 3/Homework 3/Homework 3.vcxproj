@@ -143,12 +143,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Text Include="for_ex3.txt" />
     <Text Include="Текст.txt" />
+    <Text Include="for_ex2.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex1.1.cpp" />
+    <ClCompile Include="ex3.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Hash_functions.hpp" />
     <ClInclude Include="Timer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

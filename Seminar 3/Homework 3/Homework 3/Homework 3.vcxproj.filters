@@ -18,14 +18,23 @@
     <Text Include="Текст.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
+    <Text Include="for_ex2.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+    <Text Include="for_ex3.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex1.1.cpp">
+    <ClCompile Include="ex3.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.hpp">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash_functions.hpp">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
