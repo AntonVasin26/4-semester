@@ -37,7 +37,7 @@ int main()
 	book.insert({ "Alex", "9233487" });
 	book.insert({ "Alex", "3456776" });
 
-	auto& hashed_name_index = book.get <0>();
+	const auto& hashed_name_index = book.get <0>();
 	auto count = hashed_name_index.count("Ana");
 	auto iterator = hashed_name_index.find("Ana");
 	std::cout << iterator->name << ": " << count << '\n';
@@ -47,7 +47,7 @@ int main()
 
 	std::cout << '\n';
 
-	auto& hashed_number_index = book.get <1>();
+	const auto& hashed_number_index = book.get <1>();
 	auto count1 = hashed_number_index.count("9233487");
 	auto iterator1 = hashed_number_index.find("9233487");
 	std::cout << iterator1->number << ": " << count1 << '\n';
@@ -61,7 +61,7 @@ int main()
 	std::cout << '\n' << "Name with A" << '\n';
 	const auto& ordered_name_index = book.get < 3 >();
 	auto begin = ordered_name_index.lower_bound("A");
-	auto end = ordered_name_index.upper_bound("B");
+	const auto end = ordered_name_index.upper_bound("B");
 	for (; begin != end; ++begin)
 		std::cout << begin->name << ": " << begin->number << '\n';
 

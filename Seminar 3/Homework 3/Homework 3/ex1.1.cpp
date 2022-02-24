@@ -20,33 +20,34 @@ int main()
 	{
 		init_v.push_back(i);
 	}
+
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(init_v.begin(), init_v.end(), g);
+
 	std::set <int> s1;
 	for (auto element : init_v)
 	{
 		s1.insert(element);
 	}
-	s1.clear();
 
-	std::random_device rd;
-	std::mt19937 g(rd());
-	std::shuffle(init_v.begin(), init_v.end(), g);
 	for (auto j = 1; j < 10; ++j)
 	{
+		s1.clear();
 		t1.play();
 		for (auto element : init_v)
 		{
 			s1.insert(element);
 		}
 		t1.stop();
-		s1.clear();
 
+		v1.clear();
 		t2.play();
 		v1.assign(std::begin(init_v), std::end(init_v));
 		std::sort(init_v.begin(), init_v.end());
 		t2.stop();
-		v1.clear();
+
 	}
 	t1.print_mean_time(10);
 	t2.print_mean_time(10);
-	//with a vector 8 times faster
 }
