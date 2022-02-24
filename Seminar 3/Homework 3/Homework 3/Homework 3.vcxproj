@@ -148,7 +148,7 @@
     <Text Include="for_ex2.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex3.cpp" />
+    <ClCompile Include="ex4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hash_functions.hpp" />
