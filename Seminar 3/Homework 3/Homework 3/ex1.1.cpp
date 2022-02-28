@@ -8,13 +8,9 @@
 
 int main()
 {
-	Timer<std::chrono::microseconds> t1("Set");
-	Timer<std::chrono::microseconds> t2("Vector");
 	std::vector<int> init_v;
-	std::vector<int> v1;
-	int v_length = 100000;
+	const int v_length = 100000;
 	init_v.reserve(v_length);
-	v1.reserve(v_length);
 
 	for (int i = 0; i < v_length; ++i)
 	{
@@ -25,29 +21,32 @@ int main()
 	std::mt19937 g(rd());
 	std::shuffle(init_v.begin(), init_v.end(), g);
 
-	std::set <int> s1;
-	for (auto element : init_v)
+	const int N_of_repetion = 10;
+	Timer<std::chrono::microseconds> t1("Set");
+	Timer<std::chrono::microseconds> t2("Vector");
+	for (auto j = 0; j < N_of_repetion; ++j)
 	{
-		s1.insert(element);
-	}
-
-	for (auto j = 1; j < 10; ++j)
-	{
-		s1.clear();
-		t1.play();
+		std::set <int> s1;
+		std::vector<int> v1;
+		v1.reserve(v_length);
+		if (j != 0)
+		{
+			t1.play();
+		}
 		for (auto element : init_v)
 		{
 			s1.insert(element);
 		}
 		t1.stop();
-
-		v1.clear();
-		t2.play();
+		if (j != 0)
+		{
+			t2.play();
+		}
 		v1.assign(std::begin(init_v), std::end(init_v));
 		std::sort(init_v.begin(), init_v.end());
 		t2.stop();
 
 	}
-	t1.print_mean_time(10);
-	t2.print_mean_time(10);
+	t1.print_mean_time(N_of_repetion);
+	t2.print_mean_time(N_of_repetion);
 }
