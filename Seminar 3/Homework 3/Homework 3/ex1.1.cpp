@@ -24,7 +24,7 @@ int main()
 	const int N_of_repetion = 10;
 	Timer<std::chrono::microseconds> t1("Set");
 	Timer<std::chrono::microseconds> t2("Vector");
-	for (auto j = 0; j < N_of_repetion; ++j)
+	for (auto j = 0; j <= N_of_repetion; ++j)
 	{
 		std::set <int> s1;
 		std::vector<int> v1;
