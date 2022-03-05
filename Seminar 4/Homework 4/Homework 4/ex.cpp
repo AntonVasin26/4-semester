@@ -5,16 +5,11 @@
 #include <chrono>
 #include <random>
 
-void print(std::vector<int> v1)
+void print(std::vector<int>& v1)
 {
 	std::copy(std::cbegin(v1), std::cend(v1),
 		std::ostream_iterator < int >(std::cout, " "));
 	std::cout << '\n';
-	/*for (auto element : v1)
-	{
-		std::cout << element << ' ';
-	}
-	std::cout << '\n';*/
 }
 
 
@@ -23,7 +18,7 @@ int main()
 	std::cout << "1)\n";
 	std::vector<int> v1(10);
 	v1.reserve(30);
-	std::iota(std::begin(v1), std::next(std::begin(v1), std::size(v1)), 1);
+	std::iota(std::begin(v1), std::end(v1), 1);
 
 	print(v1);
 
@@ -58,13 +53,17 @@ int main()
 	auto f =[](int n)
 	{	
 		if (n == 1) return 0;
+		if (n == 2) return 1;
 		if (n % 2 == 0) return 0;
 		for (int i = 3; i <= sqrt(abs(n)); i+=2)
 			if (n % i == 0)  return 0;
 		return 1;
 	};
 	auto simple = std::find_if(std::begin(v1), std::end(v1), f);
-	std::cout << "prime_number: " << *simple << '\n';
+	if (simple < std::end(v1))
+		std::cout << "prime_number: " << *simple << '\n';
+	else
+		std::cout << "prime_number: Not found\n";
 
 	std::cout << "8)\n";
 	std::for_each(std::begin(v1), std::end(v1), [](int& n) {n = pow(n,2); });
@@ -72,14 +71,8 @@ int main()
 
 	std::cout << "9)\n";
 	std::vector<int> v2(std::size(v1));
-	auto gen = []()
-	{
-		auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-		std::default_random_engine dre(static_cast <unsigned int> (seed));
-		std::uniform_int_distribution <unsigned int> uid(0, 100);
-		return uid(dre);
-	};
-	std::generate(std::begin(v2), std::end(v2), gen); //Problems with the capture area
+	std::uniform_int_distribution <unsigned int> uid(0, 100);
+	std::generate(std::begin(v2), std::end(v2), [&uid, &dre]() {return uid(dre);});
 	print(v2);
 
 	std::cout << "10)\n";
@@ -92,15 +85,15 @@ int main()
 
 	std::cout << "12)\n";
 	std::vector <int> v3(std::size(v2));
-	std::transform(std::begin(v1), std::end(v1), std::begin(v2), std::begin(v3), [](auto el1, auto el2) { return el1 - el2; });
+	std::transform(std::begin(v1), std::end(v1), std::begin(v2), std::begin(v3), std::minus());
 	print(v3);
 
 	std::cout << "13\n"; 
-	std::for_each(std::begin(v3), std::end(v3), [](int& x) {if (x < 0) x = 0; });
+	std::replace_if(std::begin(v3), std::end(v3), [](int x) {return x < 0; }, 0);
 	print(v3);
 
 	std::cout << "14)\n";
-	auto n_end2 = std::remove_if(std::begin(v3), std::end(v3), [](int x) { return !x; }); //There are some questions
+	auto n_end2 = std::remove_if(std::begin(v3), std::end(v3), [](int x) { return x==0; });
 	v3.erase(n_end2, std::end(v3));
 	print(v3);
 
