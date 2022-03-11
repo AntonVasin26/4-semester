@@ -1,4 +1,4 @@
-Рбработка строк
+обработка строк
 std::string <TChar - тип символа, char_traits, allocator>
 
 C - строки "hello" - const char[6] -> '\0'
