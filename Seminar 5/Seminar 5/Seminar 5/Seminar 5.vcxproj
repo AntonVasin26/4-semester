@@ -146,7 +146,7 @@
     <Text Include="Текст.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\Downloads\regex_replace.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\..\Downloads\show_currency_symbol.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,101 +1,35 @@
-// get_money manipulator example
-#include <iostream>     // std::cin, std::cout
-#include <iomanip>      // std::get_money
-#include <iostream>
-#include <vector>
-#include <string>
-#include <typeinfo>
-#include <map>
-#include <cmath>
-#include <algorithm>
+#include "Header.hpp"
 
-class money
+void show_currency_symbol(const std::string& locale_name)
 {
-public:
-	enum class m_units
-	{
-		RUB,
-		EUR,
-		GBP,
-		USD,
-		CNY,
-	};
-	money(long double value) :
-		m_value(value), m_unit(money::m_units::RUB)
-	{}
-	money(long double value, const money::m_units& unit) :
-		m_value(value), m_unit(unit)
-	{}
-	void change_unit_to(const money::m_units& unit)
-	{
-		switch (m_unit)
-		{
-		case money::m_units::RUB:
-			break;
-		case money::m_units::EUR:
-			m_value *= EUR;
-			break;
-		case money::m_units::USD:
-			m_value *= USD;
-			break;
-		case money::m_units::GBP:
-			m_value *= GBP;
-			break;
-		case money::m_units::CNY:
-			m_value *= 16.36;
-			break;
-		default:
-			break;
-		}
+	std::cout << locale_name << " : " <<
+		std::use_facet < std::moneypunct < char, false > >(
+			std::locale(locale_name)).curr_symbol() << std::endl;
+}
 
-		switch (unit)
-		{
-		case money::m_units::RUB: 
-			break;
-		case money::m_units::EUR:
-			m_value /= EUR;
-			break;
-		case money::m_units::USD:
-			m_value /= USD;
-			break;
-		case money::m_units::GBP:
-			m_value /= GBP;
-			break;
-		case money::m_units::CNY:
-			m_value /= CNY;
-			break;
-		default:
-			break;
-		}
-		m_unit = unit;
-	}
-
-	const auto const get_value()
-	{
-		return m_value;
-	}
-
-	const auto const get_unit()
-	{
-		return m_unit;
-	}
-
-	void print()
-	{
-		std::cout << '\n' << std::scientific << m_value;
-	}
-
-private:
-	long double m_value;
-	m_units m_unit;
-	static inline const double EUR = 114.7;
-	static inline const double GBP = 137.7;
-	static inline const double USD = 103.2;
-	static inline const double CNY = 16.36;
-};
+void print(std::u8string s1)
+{
+	std::copy(std::cbegin(s1), std::cend(s1),
+		std::ostream_iterator < char >(std::cout, " "));
+	std::cout << '\n';
+}
 
 int main()
 {
+	SetConsoleCP(CP_UTF8); // настраиваем консоль, чтобы она могла корректно
+	SetConsoleOutputCP(CP_UTF8); // работать с выводом символов в кодировке UTF-8
+	std::u8string s1;
+	std::u8string s2;
+	std::copy(std::istream_iterator < char >(std::cin), std::istream_iterator < char >(), std::back_inserter(s2));
+	std::cout << '\n';
+	print(s2);
+
+	s1 = boost::locale::conv::utf_to_utf < char8_t, char >(s2);
+	//std::cout << '\n' << s1 << '\n';
 	
-	std::cin ;
+	//double value;
+	//std::cin >> value;
+	//std::cout.imbue(std::locale("ru_RU.utf8"));
+	//std::cout << std::showbase << std::put_money(value, false) << std::endl;
+
 }
