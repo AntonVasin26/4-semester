@@ -1,48 +1,47 @@
-#include <algorithm>
-#include <vector>
+﻿#include <fstream>
+#include <iomanip>
 #include <iostream>
-#include <numeric>
-#include <chrono>
-#include <random>
+#include <iterator>
+#include <locale>
+#include <sstream>
+#include <string>
+#include <regex>
 
-void print(std::vector<int> v1)
-{
-	std::copy(std::cbegin(v1), std::cend(v1),
-		std::ostream_iterator < int >(std::cout, " "));
-	std::cout << '\n';
-	/*for (auto element : v1)
-	{
-		std::cout << element << ' ';
-	}
-	std::cout << '\n';*/
-}
-
+#include <Windows.h> 
 
 int main()
 {
-	std::cout << "1)\n";
-	std::vector<int> v1(1);
-	v1.reserve(30);
+    std::string str1;
+    std::getline(std::cin, str1);
+    //std::cout << std::fixed << std::setprecision(2);
+    std::istringstream s1(str1);
+    if (str1.find("USD"))
+        s1.imbue(std::locale("en_US.UTF-8"));
+    if (str1.find("RUB"))
+        s1.imbue(std::locale("ru_RU.utf8"));
+    if (str1.find("GBP"))
+        s1.imbue(std::locale("en_GB.utf8"));
+    if (str1.find("CNY"))
+        s1.imbue(std::locale("zh_Hans.utf8"));
+    if (str1.find("EUR"))
+        s1.imbue(std::locale("fr_FR.utf8"));
+    long double val;
+    s1 >> std::get_money(val);
 
-	std::cout << "2)\n";
-	std::copy(std::istream_iterator < int >(std::cin),
-		std::istream_iterator < int >(),
-		std::back_inserter(v1));
-	print(v1);
+    /*str = "USD  1,234.56";
+    std::cout << '"' << str << "\" parsed with the facet directly: ";
+    std::istringstream s2(str);
+    s2.imbue(std::locale("en_US.UTF-8"));
+    auto& f = std::use_facet<std::money_get<char>>(s2.getloc());
+    std::ios_base::iostate err;
+    std::istreambuf_iterator<char> beg(s2), end;
+    f.get(beg, end, true, s2, err, val);
+    std::cout << val / 100 << '\n';*/
 
-	std::cout << "7)\n";
-	auto f = [](int n)
-	{
-		if (n == 1) return 0;
-		if (n == 2) return 1;
-		if (n % 2 == 0) return 0;
-		for (int i = 3; i <= sqrt(abs(n)); i += 2)
-			if (n % i == 0)  return 0;
-		return 1;
-	};
-	auto simple = std::find_if(std::begin(v1), std::end(v1), f);
-	if (simple < std::end(v1))
-		std::cout << "prime_number: " << *simple << '\n';
-	else
-		std::cout << "prime_number: Not found\n";
+  /*  using namespace std;
+        string s = "parapapa";
+        int i = 0;
+
+        for (i = s.find("pa", i++); i != string::npos; i = s.find("pa", i + 1))
+            cout << i << endl;*/
 }

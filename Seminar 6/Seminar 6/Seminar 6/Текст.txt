@@ -1,0 +1,87 @@
+Потоки данных, файловая система, форматы данных
+iostream (до С++ 98)
+есть работа с wchar_t
+	ios_base(работа с флагами) --> basic_ios<>(отвечает за состояния)-->basic_streambuf(буфер: ввод/вывод) --> итераторы
+								   char: ios
+
+
+	basic_istream<> <-- basic_ios<> --> basic_ostrem<>
+	char:istrem (cin)					char: ostream (cout, cerr, clog)
+
+	basic_istream<> --> basic_iostream<> <-- basic_ostrem<>
+						char: iostream
+
+hpp - include(iosfwd)
+cpp: <istream>
+cpp: <ostream>
+
+4 состояия потоков
+goodbit - ок
+eofbit - досигнут конец ввода
+failbit - ошибка ввода
+badbit - фатальная ошибка
+good(), eof(), fail(), bad()
+rdstete, clear, set_state
+get, put, ignore, unget
+
+ 
+манипулятор - это функция: endl
+(локальное форматирование)
+
+
+
+флаги 
+(глобальное форматирование)
+std::cout.self(std::ios::showpos | std::ios::uppercase);
+
+
+
+basic_ifstream<> --> basic_fstream <-- basic_ofstrem
+char: ifstream
+
+in - режим ввода
+out - режим вывода
+tranc - удалить содержимое
+app - вывод в конец
+ate - установка курсора в конец
+binary - нет замены спец символов
+
+
+произвольный доступ
+tellg - узнать 
+tellp
+seekg - передвинуть
+seekp
+p - put
+g - get
+
+
+basic_istringstream --> basic_stringstream <-- basic_ostringstream (stringstrem.cpp)
+
+
+
+std::filesystem		::path
+					::
+
+пример: path.cpp
+.. - подъём на директорию
+. - текущая директория
+
+
+
+
+
+C:\Users\ Docs\file.txt
+file - stem
+txt - extension
+file.txt - filename
+
+
+Путь файла состоит
+win: UTF-16, wchar_t, \/
+
+
+
+JSON - Java Script Oriend Natation -> boost(nlohmanu)
+XML
+.ini

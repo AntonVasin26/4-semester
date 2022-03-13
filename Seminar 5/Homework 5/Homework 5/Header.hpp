@@ -38,8 +38,6 @@ public:
 	{
 		switch (m_unit)
 		{
-		case money::m_units::RUB:
-			break;
 		case money::m_units::EUR:
 			m_value *= EUR;
 			break;
@@ -51,6 +49,8 @@ public:
 			break;
 		case money::m_units::CNY:
 			m_value *= 16.36;
+			break;
+		case money::m_units::RUB:
 			break;
 		default:
 			break;
@@ -96,8 +96,8 @@ public:
 private:
 	long double m_value;
 	m_units m_unit;
-	static inline const double EUR = 114.7;
-	static inline const double GBP = 137.7;
-	static inline const double USD = 103.2;
-	static inline const double CNY = 16.36;
+	static inline const long double EUR = 114.7;
+	static inline const long double GBP = 137.7;
+	static inline const long double USD = 103.2;
+	static inline const long double CNY = 16.36;
 };

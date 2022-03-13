@@ -1,35 +1,73 @@
 #include "Header.hpp"
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <locale>
+#include <sstream>
+#include <string>
+#include <regex>
 
-void show_currency_symbol(const std::string& locale_name)
-{
-	std::cout << locale_name << " : " <<
-		std::use_facet < std::moneypunct < char, false > >(
-			std::locale(locale_name)).curr_symbol() << std::endl;
-}
-
-void print(std::u8string s1)
-{
-	std::copy(std::cbegin(s1), std::cend(s1),
-		std::ostream_iterator < char >(std::cout, " "));
-	std::cout << '\n';
-}
+#include <Windows.h> 
 
 int main()
 {
-	SetConsoleCP(CP_UTF8); // настраиваем консоль, чтобы она могла корректно
-	SetConsoleOutputCP(CP_UTF8); // работать с выводом символов в кодировке UTF-8
-	std::u8string s1;
-	std::u8string s2;
-	std::copy(std::istream_iterator < char >(std::cin), std::istream_iterator < char >(), std::back_inserter(s2));
-	std::cout << '\n';
-	print(s2);
+    SetConsoleCP(CP_UTF8);
+    SetConsoleOutputCP(CP_UTF8);
+    std::string str1;
+    std::cout << "Enter the amount of money you want to transfer\n";
+    std::getline(std::cin, str1);
+    //std::cout << std::fixed << std::setprecision(2);
+    std::istringstream s1(str1);
+    money::m_units m_u;
+    if (str1.find("USD") != std::string::npos) {
+        s1.imbue(std::locale("en_US.UTF-8"));
+        m_u = money::m_units::USD;
+    }
+    if (str1.find("RUB") != std::string::npos) {
+        s1.imbue(std::locale("ru_RU.utf8"));
+        m_u = money::m_units::RUB;
+    }
+    if (str1.find("GBP") != std::string::npos) {
+        s1.imbue(std::locale("en_GB.utf8"));
+        m_u = money::m_units::GBP;
+    }
+    if (str1.find("CNY") != std::string::npos) {
+        s1.imbue(std::locale("zh_Hans.utf8"));
+        m_u = money::m_units::CNY;
+    }
+    if (str1.find("EUR") != std::string::npos) {
+        s1.imbue(std::locale("fr_FR.utf8"));
+        m_u = money::m_units::EUR;
+    }
+    long double val;
+    s1 >> std::get_money(val);
+    std::cout << val << '\n';
+    money m1(val, m_u);
 
-	s1 = boost::locale::conv::utf_to_utf < char8_t, char >(s2);
-	//std::cout << '\n' << s1 << '\n';
-	
-	//double value;
-	//std::cin >> value;
-	//std::cout.imbue(std::locale("ru_RU.utf8"));
-	//std::cout << std::showbase << std::put_money(value, false) << std::endl;
+    std::cout << "Choose the transfer currency: USD, EUR, GBP, CNY, RUB\n";
+    std::cin >> str1;
 
+    if (str1 == "USD") {
+        std::cout.imbue(std::locale("en_US.UTF-8"));
+        m_u = money::m_units::USD;
+    }
+    if (str1=="RUB") {
+        std::cout.imbue(std::locale("ru_RU.utf8"));
+        m_u = money::m_units::RUB;
+    }
+    if (str1=="GBP") {
+        std::cout.imbue(std::locale("en_GB.utf8"));
+        m_u = money::m_units::GBP;
+    }
+    if (str1=="CNY") {
+        std::cout.imbue(std::locale("zh_Hans.utf8"));
+        m_u = money::m_units::CNY;
+    }
+    if (str1=="EUR") {
+        std::cout.imbue(std::locale("fr_FR.utf8"));
+        m_u = money::m_units::EUR;
+    }
+    m1.change_unit_to(m_u);
+    std::cout << std::showbase << std::put_money(m1.get_value(), false) << std::endl;
 }
