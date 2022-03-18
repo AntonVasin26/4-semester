@@ -1,22 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS
-#define _SILENCE_ALL_CXX17_DEPRECATION_WARNINGS
-
-#ifndef _HAS_AUTO_PTR_ETC
-#define _HAS_AUTO_PTR_ETC 1
-#endif
-
-#include <bitset>
-#include <chrono>
-#include <codecvt>
-#include <cstddef>
-#include <cstdlib>
-#include <ctime>
-#include <exception>
-#include <fstream>
 #include <iostream>
-#include <iterator>
 #include <locale>
-#include <stdexcept>
 #include <string>
 #include <unordered_map>
 
@@ -25,126 +8,85 @@
 #include <Windows.h>
 
 
-std::wstring convert_utf8_to_wstring(const std::string& string)
+std::string translit(const std::u32string& word)
 {
-std::wstring_convert < std::codecvt_utf8 < wchar_t > > converter;
-return converter.from_bytes(string);
-}
-
-std::string convert_wstring_to_utf8(const std::wstring& wstring)
-{
-std::wstring_convert < std::codecvt_utf8 < wchar_t > > converter;
-return converter.to_bytes(wstring);
-}
-
-std::wstring convert_string_to_wstring(
-const std::string& string,
-const std::locale& locale = std::locale())
-{
-std::vector < wchar_t > buffer(string.size());
-
-std::use_facet < std::ctype < wchar_t > >(locale).widen(
-string.data(),
-string.data() + string.size(),
-buffer.data());
-
-return std::wstring(buffer.data(), buffer.size());
-}
-
-std::string convert_wstring_to_string(
-const std::wstring& wstring,
-const std::locale& locale = std::locale())
-{
-std::vector < char > buffer(wstring.size());
-
-std::use_facet < std::ctype < wchar_t > >(locale).narrow(
-wstring.data(),
-wstring.data() + wstring.size(),
-'?', buffer.data()); // default character
-
-return std::string(buffer.data(), buffer.size());
-}
-
-std::u32string translit(const std::u32string& word)
-{
-	std::unordered_map <char32_t, std::u32string> tr = {
-	{U'А',U"A"},
-	{U'Б',U"B"},
-	{U'В',U"V"},
-	{U'Г',U"G"},
-	{U'Д',U"D"},
-	{U'Е',U"E"},
-	{U'Ё',U"JO"},
-	{U'Ж',U"ZH"},
-	{U'З',U"Z"},
-	{U'И',U"I"},
-	{U'Й',U"J"},
-	{U'К',U"K"},
-	{U'Л',U"L"},
-	{U'М',U"M"},
-	{U'Н',U"N"},
-	{U'О',U"O"},
-	{U'П',U"P"},
-	{U'Р',U"R"},
-	{U'С',U"S"},
-	{U'Т',U"T"},
-	{U'У',U"U"},
-	{U'Ф',U"F"},
-	{U'Х',U"KH"},
-	{U'Ц',U"C"},
-	{U'Ч',U"CH"},
-	{U'Ш',U"SH"},
-	{U'Щ',U"SHH"},
-	{U'Ъ',{34} },
-	{U'Ы',U"Y"},
-	{U'Ь',U"\'"},
-	{U'Э',U"EH"},
-	{U'Ю',U"JU"},
-	{U'Я',U"JA"},
-	{U'а',U"a"},
-	{U'б',U"b"},
-	{U'в',U"v"},
-	{U'г',U"g"},
-	{U'д',U"d"},
-	{U'е',U"e"},
-	{U'ё',U"jo"},
-	{U'ж',U"zh"},
-	{U'з',U"z"},
-	{U'и',U"i"},
-	{U'й',U"j"},
-	{U'к',U"k"},
-	{U'л',U"l"},
-	{U'м',U"m"},
-	{U'н',U"n"},
-	{U'о',U"o"},
-	{U'п',U"p"},
-	{U'р',U"r"},
-	{U'с',U"s"},
-	{U'т',U"t"},
-	{U'у',U"u"},
-	{U'ф',U"f"},
-	{U'х',U"kh"},
-	{U'ц',U"c"},
-	{U'ч',U"ch"},
-	{U'ш',U"sh"},
-	{U'щ',U"shh"},
-	{U'ъ',{34}},
-	{U'ы',U"y"},
-	{U'ь',U"\'"},
-	{U'э',U"eh"},
-	{U'ю',U"ju"},
-	{U'я',U"ja"}};
-std::u32string result;
+	std::unordered_map <char32_t, std::string> tr = {
+	{U'А',"A"},
+	{U'Б',"B"},
+	{U'В',"V"},
+	{U'Г',"G"},
+	{U'Д',"D"},
+	{U'Е',"E"},
+	{U'Ё',"JO"},
+	{U'Ж',"ZH"},
+	{U'З',"Z"},
+	{U'И',"I"},
+	{U'Й',"J"},
+	{U'К',"K"},
+	{U'Л',"L"},
+	{U'М',"M"},
+	{U'Н',"N"},
+	{U'О',"O"},
+	{U'П',"P"},
+	{U'Р',"R"},
+	{U'С',"S"},
+	{U'Т',"T"},
+	{U'У',"U"},
+	{U'Ф',"F"},
+	{U'Х',"KH"},
+	{U'Ц',"C"},
+	{U'Ч',"CH"},
+	{U'Ш',"SH"},
+	{U'Щ',"SHH"},
+	{U'Ъ',"\""},
+	{U'Ы',"Y"},
+	{U'Ь',"\'"},
+	{U'Э',"EH"},
+	{U'Ю',"JU"},
+	{U'Я',"JA"},
+	{U'а',"a"},
+	{U'б',"b"},
+	{U'в',"v"},
+	{U'г',"g"},
+	{U'д',"d"},
+	{U'е',"e"},
+	{U'ё',"jo"},
+	{U'ж',"zh"},
+	{U'з',"z"},
+	{U'и',"i"},
+	{U'й',"j"},
+	{U'к',"k"},
+	{U'л',"l"},
+	{U'м',"m"},
+	{U'н',"n"},
+	{U'о',"o"},
+	{U'п',"p"},
+	{U'р',"r"},
+	{U'с',"s"},
+	{U'т',"t"},
+	{U'у',"u"},
+	{U'ф',"f"},
+	{U'х',"kh"},
+	{U'ц',"c"},
+	{U'ч',"ch"},
+	{U'ш',"sh"},
+	{U'щ',"shh"},
+	{U'ъ',"\""},
+	{U'ы',"y"},
+	{U'ь',"\'"},
+	{U'э',"eh"},
+	{U'ю',"ju"},
+	{U'я',"ja"}};
+std::string result;
 for (auto letter : word)
 {
-	//if (U'А' <= letter && letter <= U'я')
-	//{
+	if (U'А' <= letter && letter <= U'я') {
 	result += tr[letter];
-	//}
-	//else
-	//{
-	//result += letter;
-	//}
+	}
+	else
+	{
+	result += letter;
+	}
 }
 return result;
 }
@@ -153,15 +95,14 @@ int main()
 {
 system("chcp 1251"); 
 std::string s1;
-//std::cin >> s1;
-s1 = "АНТОН";
-std::cout << s1;
-auto ws1 = convert_string_to_wstring(s1);
-s1 = convert_wstring_to_utf8(ws1);
+std::cout << "Введите предложение на русском:\n";
+std::getline(std::cin, s1);//"Шла Саша по шоссе и сосала сушку"
+boost::locale::generator generator;
+generator.locale_cache_enabled(true);
+std::locale locale = generator(boost::locale::util::get_system_locale());
+s1 = boost::locale::conv::to_utf < char >(s1, locale);
 std::u32string su32 = boost::locale::conv::utf_to_utf <char32_t, char>(s1);
 auto answer = translit(su32);
-s1 = boost::locale::conv::utf_to_utf <char, char32_t>(answer);
-ws1 = convert_utf8_to_wstring(s1);
-s1 = convert_wstring_to_string(ws1);
-std::cout << '\n' << s1;
+std::cout << "Предложение в транслите:\n";
+std::cout << answer;
 }

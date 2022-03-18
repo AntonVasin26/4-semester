@@ -145,7 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ex1.cpp" />
+    <ClCompile Include="ex3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Контрольный вопрос.txt" />

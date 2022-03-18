@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\Downloads\show_currency_symbol (2).cpp">
+    <ClCompile Include="..\..\..\..\..\..\Downloads\regex_search (3).cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
