@@ -5,6 +5,7 @@
 
 int main()
 {
+	std::cout << "ex3\n\n";
 	std::regex pattern(R"((?: |^)(?:[[:alnum:]](?:\.?[\-\w]+)*)@([[:alnum:]]+(?:\.([\-\w]+))*)\.([[:alnum:]]+))");
 	//std::regex pattern(R"((?:[[:alnum:]](?:\.?[\-\w]+)*)@([[:alnum:]]+(?:\.([\-\w]+))*)\.([[:alnum:]]+))");
 	std::smatch matches;
@@ -23,6 +24,5 @@ int main()
 			std::cout << std::endl;
 		});
 }
-//vasin.anton@gmail.com my main mail, I also have mail 26062002anton19@gmail.com.Maybe
-//I'll create a mail anton-a@mail.ptr.ru .And the following addresses are incorrect
-//,aaa@mail.com Ah, BB.@Gmail.com, in whom aaaah.@yandex.ru
+//example
+/*vasin.anton@gmail.com my main mail, I also have mail 26062002anton19@gmail.com.Maybe I'll create a mail anton-a@mail.ptr.ru .And the following addresses are incorrect ,aaa@mail.com Ah, BB.@Gmail.com, in whom aaaah.@yandex.ru*/
