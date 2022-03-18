@@ -95,7 +95,7 @@ int main()
 {
 system("chcp 1251"); 
 std::string s1;
-std::cout << "¬ведите предложение на русском:\n";
+std::cout << "ex2\n\n¬ведите предложение на русском:\n";
 std::getline(std::cin, s1);//"Ўла —аша по шоссе и сосала сушку"
 boost::locale::generator generator;
 generator.locale_cache_enabled(true);
