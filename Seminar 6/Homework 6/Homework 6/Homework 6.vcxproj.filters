@@ -18,5 +18,19 @@
     <Text Include="Контрольные вопросы.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
+    <Text Include="test.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+    <Text Include="result.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+    <Text Include="for_ex2.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ex2.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
