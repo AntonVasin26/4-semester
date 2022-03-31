@@ -74,18 +74,30 @@ std::time_t to_time_t(TP tp)
 
 void view_directory(const std::filesystem::path& path)
 {
-	if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
+	if (std::filesystem::exists(path))
 	{
-		for (const auto& entry : std::filesystem::directory_iterator(path))
+		if (std::filesystem::is_directory(path))
 		{
-			auto file_name = entry.path().filename().string();
-			auto file = entry.path();
-
+			std::cout << "directory: " << path.filename().string() << std::endl; 
+			for (const auto& entry : std::filesystem::directory_iterator(path))
+			{
+				auto file = entry.path();
+				auto file_name = file.filename().string();
+				auto ftime = std::filesystem::last_write_time(file);
+				auto unix = to_time_t<std::chrono::time_point<std::chrono::file_clock>>(ftime);
+				std::cout << file_name << '(' << get_unix_type(file) << "; " << get_type(file) << ") " << unix << std::endl;
+			}
+		}
+		else
+		{
+			auto file = path;
+			auto file_name = file.filename().string();
 			auto ftime = std::filesystem::last_write_time(file);
 			auto unix = to_time_t<std::chrono::time_point<std::chrono::file_clock>>(ftime);
 			std::cout << file_name << '(' << get_unix_type(file) << "; " << get_type(file) << ") " << unix << std::endl;
 		}
 	}
+	else std::cout << "file not found" << std::endl;
 }
 
 int main(int argc, char** argv)
@@ -93,6 +105,10 @@ int main(int argc, char** argv)
 	system("chcp 1251");
 
 	view_directory(std::filesystem::current_path());
+	std::cout << std::endl;
+	view_directory(std::filesystem::current_path()/"output.txt");
+	std::cout << std::endl;
+	view_directory(std::filesystem::current_path() / "outfit.txt");
 
 	system("pause");
 
