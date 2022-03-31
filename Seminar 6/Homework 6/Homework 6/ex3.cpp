@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 	std::cout << std::endl;
 	view_directory(std::filesystem::current_path() / "result.txt");
 	std::cout << std::endl;
-	view_directory(std::filesystem::current_path() / "outfit.txt");
+	view_directory(std::filesystem::current_path() / "outfit.txt"); //not found
 
 	system("pause");
 
