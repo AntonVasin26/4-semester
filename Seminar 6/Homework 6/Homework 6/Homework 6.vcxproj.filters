@@ -29,7 +29,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex2.cpp">
+    <ClCompile Include="ex1.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

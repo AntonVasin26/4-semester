@@ -4,6 +4,64 @@
 #include <fstream>
 #include <filesystem>
 #include <time.h>
+#include <unordered_map>
+
+std::string get_ext(const std::filesystem::path& file) {
+	std:: string name = file.filename().string();
+	size_t pos = name.rfind('.');
+	if (pos == SIZE_MAX) return "";
+	return name.substr(pos + 1, std::string::npos);
+}
+
+std::string get_type(const std::filesystem::path& file)
+{
+	std::string ext = get_ext(file);
+	std::unordered_map <std::string, std::string> type = {
+		{"drv", "system file"},
+		{"sys", "system file"},
+		{"exe", "system file"},
+		{"txt", "text file"},
+		{"rtf", "text file"},
+		{"doc", "text file"},
+		{"docx", "text file"},
+		{"odt", "text file"},
+		{"json", "text file"},
+		{"bmp", "graphic file"},
+		{"gif", "graphic file"},
+		{"jpg", "graphic file"},
+		{"tif", "graphic file"},
+		{"png", "graphic file"},
+		{"pds", "graphic file"},
+		{"htm", "Web page"},
+		{"html", "Web page"},
+		{"wav", "audio file"},
+		{"mp3", "audio file"},
+		{"midi", "audio file"},
+		{"kar", "audio file"},
+		{"ogg", "audio file"},
+		{"avi", "video file"},
+		{"mpeg", "video file"},
+		{"zip", "arсhive file"},
+		{"xls", "spreadsheet"},
+		{"ods", "spreadsheet"},
+		{"cpp", "text file(for_code)"},
+	};
+	if (type.find(ext) == type.end()) return "other extension";
+	return type[ext];
+}
+
+std::string get_unix_type(std::filesystem::path& file)
+{
+	using namespace std::filesystem;
+	if (is_directory(file)) return "directory";
+	if (is_regular_file(file)) return "regular file";
+	if (is_character_file(file)) return "character device";
+	if (is_block_file(file)) return "block device";
+	if (is_socket(file)) return "named IPC socket";
+	if (is_fifo(file)) return "named pipe";
+	if (is_symlink(file)) return "symbolic link";
+	return "other file";
+}
 
 template <typename TP>
 std::time_t to_time_t(TP tp)
@@ -14,35 +72,19 @@ std::time_t to_time_t(TP tp)
 	return system_clock::to_time_t(sctp);
 }
 
-void UNIXTimeToDate(char* buf, int unixtime)
-{
-	time_t t = unixtime;
-	struct tm* tm = localtime(&t);
-	char tmp[20];
-	strftime(tmp, sizeof(tmp), "%d/%m/%Y %H:%M:%S", tm);// нуу так мне удобнее ))
-	strcpy(buf, tmp);
-	return;
-}
-
-
-
 void view_directory(const std::filesystem::path& path)
 {
 	if (std::filesystem::exists(path) && std::filesystem::is_directory(path))
 	{
-		char* stst = new char[50];
 		for (const auto& entry : std::filesystem::directory_iterator(path))
 		{
 			auto file_name = entry.path().filename().string();
+			auto file = entry.path();
 
-			auto p = entry.path();
-			auto ftime = std::filesystem::last_write_time(p);
-			int unix = to_time_t<std::chrono::time_point<std::chrono::file_clock>>(ftime);
-
-			UNIXTimeToDate(stst, 1493768871);
-			std::cout << file_name << ' ' << stst << std::endl;
+			auto ftime = std::filesystem::last_write_time(file);
+			auto unix = to_time_t<std::chrono::time_point<std::chrono::file_clock>>(ftime);
+			std::cout << file_name << '(' << get_unix_type(file) << "; " << get_type(file) << ") " << unix << std::endl;
 		}
-		delete[] stst;
 	}
 }
 

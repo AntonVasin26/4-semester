@@ -2,27 +2,6 @@
 #include <fstream>
 #include <string>
 
-void erase_comments(std::string& code);
-
-int main(int argc, char** argv)
-{
-	std::fstream fin("test.txt", std::ios::in);
-
-	std::string code{
-		std::istreambuf_iterator < char >(fin),
-		std::istreambuf_iterator < char >() };
-
-	erase_comments(code);
-
-	std::fstream fout("result.txt", std::ios::out);
-
-	fout << code;
-
-	system("pause");
-
-	return EXIT_SUCCESS;
-}
-
 void erase_comments(std::string& code)
 {
 	for (auto current = std::begin(code); current != std::end(code); ++current)
@@ -61,4 +40,23 @@ void erase_comments(std::string& code)
 			break;
 		}
 	}
+}
+
+int main(int argc, char** argv)
+{
+	std::fstream fin("test.txt", std::ios::in);
+
+	std::string code{
+		std::istreambuf_iterator < char >(fin),
+		std::istreambuf_iterator < char >() };
+
+	erase_comments(code);
+
+	std::fstream fout("result.txt", std::ios::out);
+
+	fout << code;
+
+	system("pause");
+
+	return EXIT_SUCCESS;
 }
