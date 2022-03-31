@@ -146,12 +146,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="Контрольный вопрос.txt" />
+    <Text Include="ex4_test_text.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex2.cpp" />
+    <ClCompile Include="ex4.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

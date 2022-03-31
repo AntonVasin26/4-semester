@@ -18,6 +18,9 @@
     <Text Include="Контрольный вопрос.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
+    <Text Include="ex4_test_text.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.hpp">
@@ -25,7 +28,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ex2.cpp">
+    <ClCompile Include="ex4.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
