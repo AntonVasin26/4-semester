@@ -22,7 +22,7 @@ C++14/17/20 - дополнение
 
 Process 1 - адресное пространство 1
 
-Посредник[IPC(OS)] - обеспечивает обмен информации между потоками (boost.interprocess) с помощью файла/network(boost.asio)/python: reguers, urllib
+Посредник[IPC(OS)] - обеспечивает обмен информации между процесами (boost.interprocess) с помощью файла/network(boost.asio)/python: reguers, urllib
 
 Process 2 - адресное пространство 2
 
