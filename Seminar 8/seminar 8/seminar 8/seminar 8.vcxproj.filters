@@ -15,18 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Контрольные вопросы.txt">
+    <Text Include="Текст.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="ex1.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Timer.hpp">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
