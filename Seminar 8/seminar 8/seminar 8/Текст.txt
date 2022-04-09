@@ -23,7 +23,7 @@ lock
 unlock
 пример:
 std::mutex - добавить в функции члены структуры
-передать lock b unlock в оток
+передать lock b unlock в поток
 
 необходима обёртка RAII (std::lock_guard)
 
