@@ -43,14 +43,40 @@ int main(int argc, char** argv)
 		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str())();
 
 	string value = 0;
-	while (std::cin >> value)
-	{
-		boost::interprocess::scoped_lock lock(*m);
+	do {
+		//import block
 
-		text->push_back("anton");
+		if (text->size() > 0)
+		{
+			std::unique_lock lock(*m);
 
-		c->notify_one();
-	}
+			c->wait(lock, [text]() {return !text->empty(); });
+
+			value = text->back();
+
+			text->pop_back();
+
+			std::cout << value << std::endl;
+
+			continue;
+		}
+
+		//export block
+
+		if (std::cin >> value)
+		{
+
+			boost::interprocess::scoped_lock lock(*m);
+
+			if (value == "exit")
+				text->push_back("user disconect");
+			else
+				text->push_back(value);
+
+			c->notify_one();
+		}
+
+	} while (value != "exit");
 
 	system("pause");
 
