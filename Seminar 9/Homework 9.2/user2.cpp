@@ -18,29 +18,38 @@ int main(int argc, char** argv)
 {
 	system("pause");
 
-	using allocator = boost::interprocess::allocator < std::string,
+	using allocator = boost::interprocess::allocator < int,
 		boost::interprocess::managed_shared_memory::segment_manager >;
 
-	using string = boost::interprocess::basic_string < char,
-		std::char_traits < char >, allocator>;
+	using vector = boost::interprocess::vector < int, allocator>;
 
-	using vector = boost::interprocess::vector < std::string, allocator>;
+//import block
 
-	const std::string shared_memory_name = "managed_shared_memory";
-	boost::interprocess::shared_memory_object::remove(shared_memory_name.c_str());
+	const std::string shared_memory_name_im = "managed_shared_memory";
 
-	boost::interprocess::managed_shared_memory shared_memory(
-		boost::interprocess::open_or_create, shared_memory_name.c_str(), 1024);
+	boost::interprocess::managed_shared_memory shared_memory_im(
+		boost::interprocess::open_only, shared_memory_name_im.c_str());
 
-	auto text = shared_memory.find_or_construct < vector >("Vector")(shared_memory.get_segment_manager());
+	auto import_text = shared_memory_im.find <vector>("Vector").first;
+
+//export block
+
+	const std::string shared_memory_name_ex = "managed_shared_memory";
+
+	boost::interprocess::shared_memory_object::remove(shared_memory_name_ex.c_str());
+
+	boost::interprocess::managed_shared_memory shared_memory_ex(
+		boost::interprocess::create_only, shared_memory_name_ex.c_str(), 1024);
+
+	auto export_text = shared_memory.construct < vector >("Vector")(shared_memory.get_segment_manager());
 
 	const std::string mutex_name = "mutex";
 	const std::string condition_name = "condition";
 
 	auto m =
-		shared_memory.find_or_construct < boost::interprocess::interprocess_mutex >(mutex_name.c_str())();
+		shared_memory.find < boost::interprocess::interprocess_mutex >(mutex_name.c_str()).first;
 	auto c =
-		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str())();
+		shared_memory.find < boost::interprocess::interprocess_condition >(condition_name.c_str()).first;
 
 	std::cout << "user2 active\n";
 
@@ -48,15 +57,15 @@ int main(int argc, char** argv)
 	do {
 		//import block
 
-		if (text->size() > 0)
+		if (import_text->size() > 0)
 		{
 			std::unique_lock lock(*m);
 
-			c->wait(lock, [text]() {return !text->empty(); });
+			c->wait(lock, [import_text]() {return !import_text->empty(); });
 
-			value = text->back();
+			value = import_text->back();
 
-			text->pop_back();
+			import_text->pop_back();
 
 			std::cout << value << std::endl;
 
@@ -73,9 +82,9 @@ int main(int argc, char** argv)
 			boost::interprocess::scoped_lock lock(*m);
 
 			if (value == "exit")
-				text->push_back("user disconect");
+				export_text->push_back("user disconect");
 			else
-				text->push_back(value);
+				export_text->push_back(value);
 
 			c->notify_one();
 		}
