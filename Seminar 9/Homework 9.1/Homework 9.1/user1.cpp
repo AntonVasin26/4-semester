@@ -18,13 +18,13 @@ int main(int argc, char** argv)
 {
 	system("pause");
 
-	using allocator = boost::interprocess::allocator < int,
+	using allocator = boost::interprocess::allocator < std::string,
 		boost::interprocess::managed_shared_memory::segment_manager >;
 
-	using string = boost::interprocess::basic_string < char,
-		std::char_traits < char >, allocator>;
+	/*using string = boost::interprocess::basic_string < char,
+		std::char_traits < char >, allocator>;*/
 
-	using vector = boost::interprocess::vector < string, allocator>;
+	using vector = boost::interprocess::vector < std::string, allocator>;
 
 	const std::string shared_memory_name = "managed_shared_memory";
 	boost::interprocess::shared_memory_object::remove(shared_memory_name.c_str());
@@ -42,7 +42,9 @@ int main(int argc, char** argv)
 	auto c =
 		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str())();
 
-	string value = 0;
+	std::cout << "user1 active\n";
+
+	std::string value;
 	do {
 		//import block
 

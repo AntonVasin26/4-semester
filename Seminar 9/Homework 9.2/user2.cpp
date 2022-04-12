@@ -18,13 +18,13 @@ int main(int argc, char** argv)
 {
 	system("pause");
 
-	using allocator = boost::interprocess::allocator < int,
+	using allocator = boost::interprocess::allocator < std::string,
 		boost::interprocess::managed_shared_memory::segment_manager >;
 
 	using string = boost::interprocess::basic_string < char,
 		std::char_traits < char >, allocator>;
 
-	using vector = boost::interprocess::vector < string, allocator>;
+	using vector = boost::interprocess::vector < std::string, allocator>;
 
 	const std::string shared_memory_name = "managed_shared_memory";
 	boost::interprocess::shared_memory_object::remove(shared_memory_name.c_str());
@@ -32,36 +32,55 @@ int main(int argc, char** argv)
 	boost::interprocess::managed_shared_memory shared_memory(
 		boost::interprocess::open_or_create, shared_memory_name.c_str(), 1024);
 
-
-
-	auto text = shared_memory.find_or_construct <vector>("Vector")(shared_memory.get_segment_manager());
+	auto text = shared_memory.find_or_construct < vector >("Vector")(shared_memory.get_segment_manager());
 
 	const std::string mutex_name = "mutex";
 	const std::string condition_name = "condition";
 
 	auto m =
-		shared_memory.find_or_construct < boost::interprocess::interprocess_mutex >(mutex_name.c_str()).first;
+		shared_memory.find_or_construct < boost::interprocess::interprocess_mutex >(mutex_name.c_str())();
 	auto c =
-		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str()).first;
+		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str())();
 
-	string value = 0;
-	while (true)
-	{
-		std::unique_lock lock(*m);
+	std::cout << "user2 active\n";
 
-		c->wait(lock, [text]() {return !text->empty(); });
+	std::string value = 0;
+	do {
+		//import block
 
-		value = text->back();
-
-		text->pop_back();
-
-		std::cout << value << std::endl;
-
-		if (value == "exit")
+		if (text->size() > 0)
 		{
-			break;
+			std::unique_lock lock(*m);
+
+			c->wait(lock, [text]() {return !text->empty(); });
+
+			value = text->back();
+
+			text->pop_back();
+
+			std::cout << value << std::endl;
+
+			continue;
 		}
-	}
+
+		//export block
+		
+		std::cout << "export block\n";
+
+		if (std::cin >> value)
+		{
+
+			boost::interprocess::scoped_lock lock(*m);
+
+			if (value == "exit")
+				text->push_back("user disconect");
+			else
+				text->push_back(value);
+
+			c->notify_one();
+		}
+
+	} while (value != "exit");
 
 	system("pause");
 
