@@ -15,8 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Контрольные вопросы.txt">
+    <ClCompile Include="server1.cpp">
       <Filter>Исходные файлы</Filter>
-    </Text>
+    </ClCompile>
   </ItemGroup>
 </Project>
