@@ -32,8 +32,8 @@ int main(int argc, char** argv)
 	const std::string mutex_name = "mutex";
 	const std::string condition_name = "condition";
 
-	auto m =
-		shared_memory.find < boost::interprocess::interprocess_mutex >(mutex_name.c_str()).first;
+	boost::interprocess::interprocess_mutex* m =
+		shared_memory.find_or_construct < boost::interprocess::interprocess_mutex >(mutex_name.c_str())();
 	auto c =
 		shared_memory.find < boost::interprocess::interprocess_condition >(condition_name.c_str()).first;
 

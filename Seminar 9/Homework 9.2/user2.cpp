@@ -8,6 +8,7 @@
 #include <boost/interprocess/sync/named_condition.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
 #include <boost/interprocess/containers/vector.hpp>
+#include <boost/interprocess/containers/pair.hpp>
 #include <boost/interprocess/sync/interprocess_condition.hpp>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -18,78 +19,100 @@ int main(int argc, char** argv)
 {
 	system("pause");
 
-	using allocator = boost::interprocess::allocator < int,
-		boost::interprocess::managed_shared_memory::segment_manager >;
+	std::string name_user = "user1";
 
-	using vector = boost::interprocess::vector < int, allocator>;
+	using segment_manager_t = boost::interprocess::managed_shared_memory::segment_manager;
 
-//import block
+	using void_alloc = boost::interprocess::allocator < void, segment_manager_t >;
 
-	const std::string shared_memory_name_im = "managed_shared_memory";
+	using char_alloc = boost::interprocess::allocator < char, segment_manager_t >;
+	using string = boost::interprocess::basic_string < char, std::char_traits < char >, char_alloc >;
 
-	boost::interprocess::managed_shared_memory shared_memory_im(
-		boost::interprocess::open_only, shared_memory_name_im.c_str());
+	using string_alloc = boost::interprocess::allocator < string, segment_manager_t >;
+	using pair = boost::interprocess::pair <string, string>;
 
-	auto import_text = shared_memory_im.find <vector>("Vector").first;
+	using pair_alloc = boost::interprocess::allocator < pair, segment_manager_t >;
+	using vector = boost::interprocess::vector < pair, pair_alloc>;
 
-//export block
+	const std::string shared_memory_name = "managed_shared_memory";
 
-	const std::string shared_memory_name_ex = "managed_shared_memory";
+	boost::interprocess::managed_shared_memory shared_memory(
+		boost::interprocess::open_or_create, shared_memory_name.c_str(), 1024);
 
-	boost::interprocess::shared_memory_object::remove(shared_memory_name_ex.c_str());
-
-	boost::interprocess::managed_shared_memory shared_memory_ex(
-		boost::interprocess::create_only, shared_memory_name_ex.c_str(), 1024);
-
-	auto export_text = shared_memory.construct < vector >("Vector")(shared_memory.get_segment_manager());
+	auto text = shared_memory.find_or_construct < vector >("Vector")(shared_memory.get_segment_manager());
 
 	const std::string mutex_name = "mutex";
 	const std::string condition_name = "condition";
 
 	auto m =
-		shared_memory.find < boost::interprocess::interprocess_mutex >(mutex_name.c_str()).first;
+		shared_memory.find_or_construct < boost::interprocess::interprocess_mutex >(mutex_name.c_str())();
 	auto c =
-		shared_memory.find < boost::interprocess::interprocess_condition >(condition_name.c_str()).first;
+		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str())();
+
+	auto name = shared_memory.find_or_construct < string >("String1")(shared_memory.get_segment_manager());
+
+	auto mess = shared_memory.find_or_construct < string >("String2")(shared_memory.get_segment_manager());
+
+	pair value(*name, *mess);
+
+	std::string meassage;
 
 	std::cout << "user2 active\n";
 
-	std::string value = 0;
 	do {
 		//import block
 
-		if (import_text->size() > 0)
+		std::cout << text->size() << '\n';
+
+		if (text->size() > 0)
 		{
 			std::unique_lock lock(*m);
 
-			c->wait(lock, [import_text]() {return !import_text->empty(); });
+			value = text->back();
 
-			value = import_text->back();
+			c->wait(lock, [value, name_user]() {return value.first == name_user.c_str(); });
 
-			import_text->pop_back();
+			if ((value).first != name_user.c_str())
+			{
 
-			std::cout << value << std::endl;
+				text->pop_back();
 
-			continue;
+				std::cout << (value).second << std::endl;
+
+				continue;
+			}
 		}
 
 		//export block
-		
-		std::cout << "export block\n";
 
-		if (std::cin >> value)
+		if (std::cin >> meassage)
 		{
 
 			boost::interprocess::scoped_lock lock(*m);
 
-			if (value == "exit")
-				export_text->push_back("user disconect");
+			(value).first = name_user.c_str();
+
+			if (meassage == "exit")
+			{
+				(value).second = "\\\\user disconect\n";
+			}
 			else
-				export_text->push_back(value);
+			{
+				(value).second = meassage.c_str();
+			}
+
+			text->push_back(value);
+
+			std::cout << "iter\n";
 
 			c->notify_one();
 		}
 
-	} while (value != "exit");
+	} while (meassage != "exit");
+
+	std::cout << (text->back()).first << ": " << (text->back()).second << '\n';
+	text->pop_back();
+	std::cout << (text->back()).first << ": " << (text->back()).second << '\n';
 
 	system("pause");
 

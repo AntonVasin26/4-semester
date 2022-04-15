@@ -145,7 +145,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="user1.cpp" />
+    <ClCompile Include="Source1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Текст.txt" />
