@@ -60,7 +60,7 @@ public:
 
         reader.join();
 
-        send_message(m_user_name + " left the chat");
+        send_message(" left the chat");
 
         if (!(--(*m_users)))
         {
@@ -76,7 +76,7 @@ private:
 
     void read()
     {
-        send_message(m_user_name + " joined the chat");
+        send_message(" joined the chat");
 
         while (true)
         {
@@ -90,7 +90,8 @@ private:
 
             while (*vector_size != m_local_messages)
             {
-                std::cout << (*m_vector)[m_local_messages - *count_delete_messeages].second << /* '/' << m_vector->size() << '/' << *vector_size << '/' <<*/ *count_delete_messeages << std::endl;
+                auto message = (*m_vector)[m_local_messages - *count_delete_messeages];
+                std::cout << message.first << ": " << message.second << std::endl;
                 m_local_messages++;
             }
         }
@@ -104,17 +105,17 @@ private:
 
         for (const auto& message : *m_vector)
         {
-            std::cout << message.second << std::endl;
+            std::cout << message.first << ": " << message.second << std::endl;
         }
 
-        std::cout << "thats all \n";
+        std::cout << "history end \n";
     }
 
     void send_message(const std::string& message)
     {
         boost::interprocess::scoped_lock lock(*m_mutex);
         string_t un(m_user_name.c_str(), m_shared_memory.get_segment_manager());
-        string_t ms((m_user_name + ": " + message ).c_str(), m_shared_memory.get_segment_manager());
+        string_t ms(message.c_str(), m_shared_memory.get_segment_manager());
         m_vector->push_back(pair(un, ms));
         (*vector_size)++;
 
@@ -151,7 +152,7 @@ private:
         {
             std::getline(std::cin, message);
 
-            if (message == "show history")  show_history();
+            if (message == "//show history")  show_history();
 
             else send_message(message);
 
