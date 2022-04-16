@@ -33,15 +33,17 @@ private:
 
 public:
 
-    explicit Chat(const std::string& user_name, const std::string& chat_name) : m_user_name(user_name), m_exit_flag(false), shared_memory_name(chat_name)
+    Chat(const std::string& user_name, const std::string& chat_name) : m_user_name(user_name), m_exit_flag(false), shared_memory_name(chat_name)
     {
-        m_shared_memory = shared_memory_t(boost::interprocess::open_or_create, shared_memory_name.c_str(), 1024);
+        m_shared_memory = shared_memory_t(boost::interprocess::open_or_create, shared_memory_name.c_str(), 4096);
 
         m_vector = m_shared_memory.find_or_construct < vector_t >(vector_name.c_str())(m_shared_memory.get_segment_manager());
         m_mutex = m_shared_memory.find_or_construct < mutex_t >(mutex_name.c_str())();
         m_condition = m_shared_memory.find_or_construct < condition_t >(condition_name.c_str())();
         m_users = m_shared_memory.find_or_construct < counter_t >(users_name.c_str())(0);
-        m_messages = m_shared_memory.find_or_construct < counter_t >(messages_name.c_str())();
+        count_delete_messeages = m_shared_memory.find_or_construct < counter_t >(messages_name.c_str())(0);
+        vector_size = m_shared_memory.find_or_construct < counter_t >(vector_size_name.c_str())(0);
+
 
         (*m_users)++;
     }
@@ -62,7 +64,7 @@ public:
 
         if (!(--(*m_users)))
         {
-            m_users--;
+            (*m_users)--;
         }
         else
         {
@@ -86,9 +88,9 @@ private:
                 break;
             }
 
-            while (m_vector->size() != m_local_messages)
+            while (*vector_size != m_local_messages)
             {
-                std::cout << (*m_vector)[m_local_messages].second << std::endl;
+                std::cout << (*m_vector)[m_local_messages - *count_delete_messeages].second /* << '/' << *vector_size << '/' << m_vector->size()*/ << std::endl;
                 m_local_messages++;
             }
         }
@@ -98,10 +100,14 @@ private:
     {
         std::scoped_lock lock(*m_mutex);
 
+        std::cout << "history: \n";
+
         for (const auto& message : *m_vector)
         {
             std::cout << message.second << std::endl;
         }
+
+        std::cout << "thats all \n";
     }
 
     void send_message(const std::string& message)
@@ -110,6 +116,7 @@ private:
         string_t un(m_user_name.c_str(), m_shared_memory.get_segment_manager());
         string_t ms((m_user_name + ": " + message).c_str(), m_shared_memory.get_segment_manager());
         m_vector->push_back(pair(un, ms));
+        (*vector_size)++;
 
         //if (m_vector->size() > 3)
         //{
@@ -117,6 +124,14 @@ private:
         //    m_vector->erase(m_vector->begin(), m_vector->begin() + 2);
         //    m_local_messages -= 2;
         //}
+
+
+        if (m_vector->size() > 10)
+        {
+            *count_delete_messeages += 5;
+            auto b = m_vector->begin();
+            m_vector->erase(b, b + 5);
+        }
 
         m_condition->notify_all();
 
@@ -136,7 +151,9 @@ private:
         {
             std::getline(std::cin, message);
 
-            send_message(message);
+            if (message == "show history")  show_history();
+
+            else send_message(message);
 
         }
     }
@@ -149,6 +166,7 @@ private:
     static inline const std::string condition_name = "condition";
     static inline const std::string users_name = "users";
     static inline const std::string messages_name = "messages";
+    static inline const std::string vector_size_name = "vector_size";
 
 private:
 
@@ -161,8 +179,9 @@ private:
     mutex_t* m_mutex;
     condition_t* m_condition;
     counter_t* m_users;
-    counter_t* m_messages;
+    counter_t* count_delete_messeages;
     std::size_t m_local_messages = 0;
+    counter_t* vector_size;
 };
 
 int main(int argc, char** argv)
