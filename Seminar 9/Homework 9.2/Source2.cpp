@@ -31,7 +31,7 @@ private:
 
 public:
 
-    explicit Chat(const std::string& user_name) : m_user_name(user_name), m_exit_flag(false)
+    explicit Chat(const std::string& user_name, const std::string& chat_name) : m_user_name(user_name), m_exit_flag(false), shared_memory_name(chat_name)
     {
         m_shared_memory = shared_memory_t(boost::interprocess::open_or_create, shared_memory_name.c_str(), 1024);
 
@@ -79,6 +79,11 @@ private:
             std::unique_lock lock(*m_mutex);
             m_condition->wait(lock, [this]() { return !m_vector->empty(); });
 
+            //if ((*m_vector).back() == "vector cleared")
+            //{
+            //    m_local_messages -= 1;
+            //}
+
             if (m_exit_flag)
             {
                 break;
@@ -105,8 +110,16 @@ private:
     void send_message(const std::string& message)
     {
         boost::interprocess::scoped_lock lock(*m_mutex);
+
         m_vector->push_back(string_t((m_user_name + ": " + message).c_str(),
             m_shared_memory.get_segment_manager()));
+
+        //if (m_vector->size() > 3)
+        //{
+        //    m_vector->push_back(string_t(size_vec_flag.c_str(), m_shared_memory.get_segment_manager()));
+        //    m_vector->erase(m_vector->begin(), m_vector->begin()+2);
+        //    m_local_messages -= 1;
+        //}
 
         m_condition->notify_all();
 
@@ -128,13 +141,11 @@ private:
 
             send_message(message);
 
-            //std::cout << std::endl;
         }
     }
 
 private:
-
-    static inline const std::string shared_memory_name = "shared_memory";
+    static inline const std::string size_vec_flag = "vector cleared";
     static inline const std::string vector_name = "vector";
     static inline const std::string mutex_name = "mutex";
     static inline const std::string condition_name = "condition";
@@ -144,6 +155,7 @@ private:
 private:
 
     std::string m_user_name;
+    std::string shared_memory_name;
     std::atomic < bool > m_exit_flag;
 
     shared_memory_t m_shared_memory;
@@ -159,11 +171,13 @@ int main(int argc, char** argv)
 {
     std::string user_name;
 
+    std::string chat_name = "shared_memory";
+
     std::cout << "Enter your name: ";
 
     std::getline(std::cin, user_name);
 
-    Chat(user_name).run();
+    Chat(user_name, chat_name).run();
 
     system("pause");
 

@@ -19,10 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Sourc.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ex.txt" />
+    <ClCompile Include="HM9.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

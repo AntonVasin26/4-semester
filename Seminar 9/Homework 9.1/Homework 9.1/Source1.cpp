@@ -79,10 +79,10 @@ private:
             std::unique_lock lock(*m_mutex);
             m_condition->wait(lock, [this]() { return !m_vector->empty(); });
 
-            if ((*m_vector).back() == "vector cleared")
-            {
-                m_local_messages -= 50;
-            }
+            //if ((*m_vector).back() == "vector cleared")
+            //{
+            //    m_local_messages -= 1;
+            //}
 
             if (m_exit_flag)
             {
@@ -114,12 +114,12 @@ private:
         m_vector->push_back(string_t((m_user_name + ": " + message).c_str(),
             m_shared_memory.get_segment_manager()));
 
-        if (m_vector->size() > 100)
-        {
-            m_vector->push_back(string_t(size_vec_flag.c_str(), m_shared_memory.get_segment_manager()));
-            m_vector->erase(m_vector->begin() + 51, m_vector->end());
-            m_local_messages -= 50;
-        }
+        //if (m_vector->size() > 3)
+        //{
+        //    m_vector->push_back(string_t(size_vec_flag.c_str(), m_shared_memory.get_segment_manager()));
+        //    m_vector->erase(m_vector->begin(), m_vector->begin() + 2);
+        //    m_local_messages -= 1;
+        //}
 
         m_condition->notify_all();
 
@@ -171,7 +171,7 @@ int main(int argc, char** argv)
 {
     std::string user_name;
 
-    std::string chat_name;
+    std::string chat_name = "shared_memory";
 
     std::cout << "Enter your name: ";
 
