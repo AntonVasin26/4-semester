@@ -8,6 +8,7 @@
 #include <boost/interprocess/sync/named_condition.hpp>
 #include <boost/interprocess/sync/named_mutex.hpp>
 #include <boost/interprocess/containers/vector.hpp>
+#include <boost/interprocess/containers/pair.hpp>
 #include <boost/interprocess/sync/interprocess_condition.hpp>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -18,16 +19,22 @@ int main(int argc, char** argv)
 {
 	system("pause");
 
-	using allocator = boost::interprocess::allocator < std::string,
-		boost::interprocess::managed_shared_memory::segment_manager >;
+	std::string name_user = "user1";
 
-	/*using string = boost::interprocess::basic_string < char,
-		std::char_traits < char >, allocator>;*/
+	using segment_manager_t = boost::interprocess::managed_shared_memory::segment_manager;
 
-	using vector = boost::interprocess::vector < std::string, allocator>;
+	using void_alloc = boost::interprocess::allocator < void, segment_manager_t >;
+
+	using char_alloc = boost::interprocess::allocator < char, segment_manager_t >;
+	using string = boost::interprocess::basic_string < char, std::char_traits < char >, char_alloc >;
+
+	using string_alloc = boost::interprocess::allocator < string, segment_manager_t >;
+	using pair =boost::interprocess::pair <string, string>;
+
+	using pair_alloc = boost::interprocess::allocator < pair, segment_manager_t >;
+	using vector = boost::interprocess::vector < pair, pair_alloc>;
 
 	const std::string shared_memory_name = "managed_shared_memory";
-	boost::interprocess::shared_memory_object::remove(shared_memory_name.c_str());
 
 	boost::interprocess::managed_shared_memory shared_memory(
 		boost::interprocess::open_or_create, shared_memory_name.c_str(), 1024);
@@ -42,11 +49,20 @@ int main(int argc, char** argv)
 	auto c =
 		shared_memory.find_or_construct < boost::interprocess::interprocess_condition >(condition_name.c_str())();
 
+	auto name = shared_memory.find_or_construct < string >("String1")(shared_memory.get_segment_manager());
+
+	auto mess = shared_memory.find_or_construct < string >("String2")(shared_memory.get_segment_manager());
+
+	pair value(*name, *mess);
+
+	std::string meassage;
+
 	std::cout << "user1 active\n";
 
-	std::string value;
 	do {
 		//import block
+
+		std::cout << text->size() << '\n';
 
 		if (text->size() > 0)
 		{
@@ -56,29 +72,47 @@ int main(int argc, char** argv)
 
 			value = text->back();
 
-			text->pop_back();
+			if ((value).first != name_user.c_str())
+			{
 
-			std::cout << value << std::endl;
+				text->pop_back();
 
-			continue;
+				std::cout << (value).second << std::endl;
+
+				continue;
+			}
 		}
 
 		//export block
 
-		if (std::cin >> value)
+		if (std::cin >> meassage)
 		{
 
 			boost::interprocess::scoped_lock lock(*m);
 
-			if (value == "exit")
-				text->push_back("user disconect");
+			(value).first = name_user.c_str();
+
+			if (meassage == "exit")
+			{
+				(value).second = "\\\\user disconect\n";
+			}
 			else
-				text->push_back(value);
+			{
+				(value).second = meassage.c_str();
+			}
+
+			text->push_back(value);
+
+			std::cout << "iter\n";
 
 			c->notify_one();
 		}
 
-	} while (value != "exit");
+	} while (meassage != "exit");
+
+	std::cout << (text->back()).first << ": " << (text->back()).second << '\n';
+	text->pop_back();
+	std::cout << (text->back()).first << ": " << (text->back()).second << '\n';
 
 	system("pause");
 
