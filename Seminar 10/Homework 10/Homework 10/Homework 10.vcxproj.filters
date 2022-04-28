@@ -19,9 +19,4 @@
       <Filter>Исходные файлы</Filter>
     </Text>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Client.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-  </ItemGroup>
 </Project>
