@@ -48,7 +48,7 @@ public:
 	{
 		auto reader = std::thread(&Chat1::read, socket);
 
-		write();
+		write(socket);
 
 		reader.join();
 
@@ -57,7 +57,8 @@ public:
 
 	void read(boost::asio::ip::tcp::socket& socket)
 	{
-		send_message(" joined the chat");
+		boost::asio::socket_base::bytes_readable command(true);
+		socket.io_control(command);
 
 		while (true)
 		{
@@ -66,29 +67,64 @@ public:
 				break;
 			}
 
-			if
-			boost::asio::streambuf buffer;
-			boost::asio::read_until(socket, buffer, '\n');
-
-			std::string message;
-
-			// Because buffer 'buf' may contain some other data
-			// after '\n' symbol, we have to parse the buffer and
-			// extract only symbols before the delimiter.
-			std::istream input_stream(&buffer);
-			std::getline(input_stream, message, '\n');
-			std::cout << message;
+			socket.io_control(command);
+			if (command.get() > 0)
+			{
+				std::cout << read_message(socket);
+			}
 		}
 	}
 
-	void write()
+	void write(boost::asio::ip::tcp::socket& socket)
 	{
+		std::string message;
+		while (true)
+		{
+			if (m_exit_flag)
+			{
+				break;
+			}
+			std::getline(std::cin, message);
+			if (message == "//exit")
+				m_exit_flag = true;
+			message = m_user_name + ": " + message + '#';
 
+			boost::asio::write(socket, boost::asio::buffer(message));
+		}
+
+
+	}
+
+	std::string read_message(boost::asio::ip::tcp::socket& socket)
+	{
+		boost::asio::streambuf buffer;
+
+		boost::asio::read_until(socket, buffer, '#');
+
+		std::string message;
+
+		// Because buffer 'buf' may contain some other data
+		// after '\n' symbol, we have to parse the buffer and
+		// extract only symbols before the delimiter.
+		std::istream input_stream(&buffer);
+		std::getline(input_stream, message, '#');
+
+		if (message.find("//exit") != std::string::npos)
+		{
+			m_exit_flag = true;
+			message.erase(*std::end(message) - 7, 7);
+			return "sysctem message: " + message + "left the chat";
+		}
+
+		return message;
 	}
 
 	void send_message(std::string message)
 	{
+		std::string data;
+		std::cin >> data;
 
+		boost::asio::write(socket, boost::asio::buffer(data));
 	}
 
 
