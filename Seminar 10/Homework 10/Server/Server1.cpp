@@ -161,3 +161,5 @@ int main()
 {
 	system("chcp 1251");
 	run_server("Server", 3333);
+	run_server("Server", 10000);
+}

@@ -158,4 +158,5 @@ int main()
 {
 	system("chcp 1251");
 	connect_to_server("Anton", "127.0.0.1", 3333);
+	//connect_to_server("Anton", "93.175.8.9", 10000);
 }

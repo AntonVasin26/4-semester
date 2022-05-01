@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Server1.cpp">
+    <ClCompile Include="asteroids.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
