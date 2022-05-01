@@ -160,3 +160,11 @@ int main()
 	connect_to_server("Anton", "127.0.0.1", 3333);
 	//connect_to_server("Anton", "93.175.8.9", 10000);
 }
+
+//this is what the server looks like
+//int main()
+//{
+//	system("chcp 1251");
+//	run_server("Server", 3333);
+//	//run_server("Server", 10000);
+//}
