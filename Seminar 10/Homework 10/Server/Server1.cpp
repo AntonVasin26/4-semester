@@ -7,7 +7,80 @@
 class chat_TCP
 {
 public:
-	chat_TCP(const std::string& user_name, boost::asio::ip::tcp::socket& socket) : m_user_name(user_name), m_exit_flag(false), g_socket(socket){}
+	std::string m_user_name;
+	bool m_exit_flag;
+	std::shared_ptr< boost::asio::ip::tcp::socket> m_socket_ptr;
+
+public:
+	chat_TCP(const std::string& user_name) : m_user_name(user_name), m_exit_flag(false), m_socket_ptr(nullptr){}
+
+	void connect_to_server(const std::string& ip, int port)
+	{
+		try
+		{
+			boost::asio::ip::tcp::endpoint endpoint(
+				boost::asio::ip::address::from_string(ip), port);
+
+			boost::asio::io_service io_service;
+
+			m_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(io_service, endpoint.protocol());
+
+			(*m_socket_ptr).connect(endpoint);
+
+			std::string data = "systeam message: " + m_user_name + " connected to the server#";
+
+			send_message(data);
+
+			run();
+
+			(*m_socket_ptr).close();
+		}
+		catch (boost::system::system_error& e)
+		{
+			std::cout << "Error occured! Error code = " << e.code() << ". Message: " << e.what() << std::endl;
+
+			//return e.code().value();
+		}
+
+		system("pause");
+	}
+
+	void run_server(int port)
+	{
+		const std::size_t size = 30;
+
+		boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address_v4::any(), port);
+
+		boost::asio::io_service io_service;
+
+		try
+		{
+			boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint.protocol());
+
+			acceptor.bind(endpoint);
+
+			acceptor.listen(size);
+
+			m_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(io_service);
+
+			acceptor.accept(*m_socket_ptr);
+
+			std::string data = "systeam message: Connecting to server succesesed#";
+
+			send_message(data);
+
+			run();
+
+			(*m_socket_ptr).close();
+
+		}
+		catch (boost::system::system_error& e)
+		{
+			std::cout << "Error occured! Error code = " << e.code() << ". Message: " << e.what() << std::endl;
+
+			//return e.code().value();
+		}
+	}
 
 	void run()
 	{
@@ -21,11 +94,11 @@ public:
 	void read()
 	{
 		boost::asio::socket_base::bytes_readable command(true);
-		g_socket.io_control(command);
+		(*m_socket_ptr).io_control(command);
 
 		while (!m_exit_flag)
 		{
-			g_socket.io_control(command);
+			(*m_socket_ptr).io_control(command);
 			if (command.get() > 0)
 			{
 				std::cout << read_message() << std::endl;
@@ -50,7 +123,7 @@ public:
 	{
 		boost::asio::streambuf buffer;
 
-		boost::asio::read_until(g_socket, buffer, '#');
+		boost::asio::read_until(*m_socket_ptr, buffer, '#');
 
 		std::string message;
 
@@ -73,93 +146,16 @@ public:
 	{
 		if (message == ":disconect")
 			m_exit_flag = true;
-		boost::asio::write(g_socket, boost::asio::buffer(m_user_name + ":" + message + '#'));
+		boost::asio::write(*m_socket_ptr, boost::asio::buffer(m_user_name + ":" + message + '#'));
 	}
-
-
-public:
-	std::string m_user_name;
-	bool m_exit_flag;
-	boost::asio::ip::tcp::socket& g_socket;
 
 };
-
-void connect_to_server(const std::string& name, const std::string& ip, int port)
-{
-	try
-	{
-		boost::asio::ip::tcp::endpoint endpoint(
-			boost::asio::ip::address::from_string(ip), port);
-
-		boost::asio::io_service io_service;
-
-		boost::asio::ip::tcp::socket socket(io_service, endpoint.protocol());
-
-		socket.connect(endpoint);
-
-		chat_TCP chat(name, socket);
-
-		std::string data = "systeam message: " + name + " connected to the server#";
-
-		boost::asio::write(socket, boost::asio::buffer(data));
-
-		chat.run();
-
-		socket.close();
-	}
-	catch (boost::system::system_error& e)
-	{
-		std::cout << "Error occured! Error code = " << e.code() << ". Message: " << e.what() << std::endl;
-
-		//return e.code().value();
-	}
-
-	system("pause");
-}
-
-void run_server(const std::string& name, int port)
-{
-	const std::size_t size = 30;
-
-	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address_v4::any(), port);
-
-	boost::asio::io_service io_service;
-
-	try
-	{
-		boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint.protocol());
-
-		acceptor.bind(endpoint);
-
-		acceptor.listen(size);
-
-		boost::asio::ip::tcp::socket socket(io_service);
-
-		acceptor.accept(socket);
-
-		chat_TCP chat(name, socket);
-
-		std::string data = "systeam message: Connecting to server succesesed#";
-
-		boost::asio::write(socket, boost::asio::buffer(data));
-
-		chat.run();
-
-		socket.close();
-
-	}
-	catch (boost::system::system_error& e)
-	{
-		std::cout << "Error occured! Error code = " << e.code() << ". Message: " << e.what() << std::endl;
-
-		//return e.code().value();
-	}
-}
 
 
 int main()
 {
 	system("chcp 1251");
-	run_server("Server", 3333);
+	chat_TCP chat("Server");
+	chat.run_server(3333);
 	//run_server("Server", 10000);
 }
