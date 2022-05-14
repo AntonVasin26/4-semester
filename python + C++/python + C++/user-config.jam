@@ -1,0 +1,8 @@
+import toolset : using ;
+using python 
+  : 3.10
+  : D:\\Inf\\python\\python.exe
+  : D:\\Inf\\python\\include
+  : D:\\Inf\\python\\libs
+  : # conditions
+  ;

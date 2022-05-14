@@ -6,24 +6,32 @@
 
 class chat_TCP
 {
-public:
+	using socket = boost::asio::ip::tcp::socket;
+
+private:
+	static inline const std::size_t max_connections = 30;
+
+	boost::asio::io_service io_service;
 	std::string m_user_name;
+	boost::asio::ip::tcp::endpoint endpoint;
+	boost::asio::ip::tcp::acceptor acceptor;
 	bool m_exit_flag;
-	std::shared_ptr< boost::asio::ip::tcp::socket> m_socket_ptr;
+	std::shared_ptr<socket> m_socket_ptr;
+
 
 public:
-	chat_TCP(const std::string& user_name) : m_user_name(user_name), m_exit_flag(false), m_socket_ptr(nullptr){}
+	chat_TCP(const std::string& user_name) : 
+		m_user_name(user_name), m_exit_flag(false), m_socket_ptr(nullptr), acceptor(io_service)
+	{}
 
 	void connect_to_server(const std::string& ip, int port)
 	{
 		try
 		{
-			boost::asio::ip::tcp::endpoint endpoint(
-				boost::asio::ip::address::from_string(ip), port);
+			endpoint.address(boost::asio::ip::address::from_string(ip));
+			endpoint.port(port);
 
-			boost::asio::io_service io_service;
-
-			m_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(io_service, endpoint.protocol());
+			m_socket_ptr = std::make_shared<socket>(io_service, endpoint.protocol());
 
 			(*m_socket_ptr).connect(endpoint);
 
@@ -35,7 +43,7 @@ public:
 
 			(*m_socket_ptr).close();
 		}
-		catch (boost::system::system_error& e)
+		catch (const boost::system::system_error& e)
 		{
 			std::cout << "Error occured! Error code = " << e.code() << ". Message: " << e.what() << std::endl;
 
@@ -47,21 +55,16 @@ public:
 
 	void run_server(int port)
 	{
-		const std::size_t size = 30;
-
-		boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address_v4::any(), port);
-
-		boost::asio::io_service io_service;
+		endpoint.address(boost::asio::ip::address_v4::any());
+		endpoint.port(port);
 
 		try
 		{
-			boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint.protocol());
-
+			acceptor.open(endpoint.protocol());
 			acceptor.bind(endpoint);
+			acceptor.listen(max_connections);
 
-			acceptor.listen(size);
-
-			m_socket_ptr = std::make_shared<boost::asio::ip::tcp::socket>(io_service);
+			m_socket_ptr = std::make_shared<socket>(io_service);
 
 			acceptor.accept(*m_socket_ptr);
 
@@ -74,7 +77,7 @@ public:
 			(*m_socket_ptr).close();
 
 		}
-		catch (boost::system::system_error& e)
+		catch (const boost::system::system_error& e)
 		{
 			std::cout << "Error occured! Error code = " << e.code() << ". Message: " << e.what() << std::endl;
 
