@@ -91,19 +91,22 @@ std::vector< std::pair<unsigned int, unsigned int> > find_indexs(int sum, std::v
 
 int main()
 {
+	auto seed = std::chrono::system_clock::now().time_since_epoch().count();
 
 	std::vector<int> input_list = { 0,0,2,2,3,4,4,6,6,7,7,8,8 };
 	const unsigned int l_lengh = std::size(input_list);
 	int find_sum = 8;
-
-	auto seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine dre_1(static_cast <unsigned int> (seed));
 	std::shuffle(std::begin(input_list), std::end(input_list), dre_1);
 
+	//const unsigned int l_lengh = 100;
+	//std::vector<int> input_list(l_lengh);
 	//std::default_random_engine dre_2(static_cast <int> (seed));
 	//std::uniform_int_distribution <int> uid(-100, 100);
-	//std::generate(std::begin(input_list), std::end(input_list), [&uid, &dre]() {return uid(dre); });
-	//find_sum = uid(dre);
+	//std::generate(std::begin(input_list), std::end(input_list), [&uid, &dre_2]() {return uid(dre_2); });
+	//int find_sum = uid(dre_2);
+
+
 	std::cout << "input list: ";
 	print(input_list);
 	std::cout << "find sum: " << find_sum << '\n';
@@ -126,6 +129,7 @@ int main()
 	auto answer = find_indexs(find_sum, work_list);
 	auto direct_sort_answer = [](std::pair<unsigned int, unsigned int> x, std::pair <unsigned int, unsigned int> y) { return x.first < y.first; };
 	std::sort(std::begin(answer), std::end(answer), direct_sort_answer);
+	std::cout << "answer: ";
 	for (auto elm : answer)
 	{
 		std::cout << "(" << elm.first << "; " << elm.second << "); ";
