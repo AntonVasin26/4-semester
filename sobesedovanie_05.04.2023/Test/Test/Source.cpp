@@ -36,12 +36,12 @@ std::vector< std::pair<unsigned int, unsigned int> > find_indexs(int sum, std::v
 			i_r--;
 		}
 
-		if (list[i_l].second + list[i_r].second < sum)
+		else if (list[i_l].second + list[i_r].second < sum)
 		{
 			i_l++;
 		}
 
-		if (list[i_l].second + list[i_r].second == sum)
+		else
 		{
 			if (list[i_l].second == list[i_r].second)
 			{
@@ -93,9 +93,9 @@ int main()
 {
 	auto seed = std::chrono::system_clock::now().time_since_epoch().count();
 
-	std::vector<int> input_list = { 0,0,2,2,3,4,4,6,6,7,7,8,8 };
+	std::vector<int> input_list = { 2, 29 };
 	const unsigned int l_lengh = std::size(input_list);
-	int find_sum = 8;
+	int find_sum = 4;
 	std::default_random_engine dre_1(static_cast <unsigned int> (seed));
 	std::shuffle(std::begin(input_list), std::end(input_list), dre_1);
 
